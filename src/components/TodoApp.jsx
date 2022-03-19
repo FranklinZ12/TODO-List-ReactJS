@@ -1,21 +1,41 @@
-import React, { Fragment, useReducer } from 'react';
+import React, { Fragment, useEffect, useReducer } from 'react';
 import { todoReducer } from '../hooks/todo-reducer';
-import "../styles/todo.css"
+import { useForm } from '../hooks/useForm';
+import "../styles/todo.css";
+import { ToastContainer, toast, Zoom } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const initialState = [{
-    id: new Date().getTime(),
-    desc: 'Aprender React',
-    done: false,
-}];
+const init = () => {
+    return JSON.parse(localStorage.getItem('todos')) || []
+    // return [{
+    //     id: new Date().getTime(),
+    //     desc: 'Aprender React',
+    //     done: false,
+    // }];
+}
+
+
 const TodoApp = () => {
-    const [todos, dispatch] = useReducer(todoReducer, initialState);
-    console.log(todos)
+    const [todos, dispatch] = useReducer(todoReducer, [], init);
+
+    const [{ descripcion }, handleInputChange, reset] = useForm({
+        descripcion: ''
+    });
+
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }, [todos])
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (descripcion.trim() <= 1) {
+            return notify();
+        }
         const newTodo = {
             id: new Date().getTime(),
-            desc: 'Nueva tarea',
+            desc: descripcion,
             done: false,
         };
 
@@ -25,7 +45,19 @@ const TodoApp = () => {
         };
 
         dispatch(actionAdd);
+        reset();
     }
+
+    const notify = () => toast.info("Porfavor ingresar una tarea!", {
+        position: "top-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        toastId: "custom-id-yes",
+    });
 
     return (
         <Fragment>
@@ -55,12 +87,17 @@ const TodoApp = () => {
                             name="descripcion"
                             placeholder="Aprender..."
                             autoComplete="off"
+                            value={descripcion}
+                            onChange={handleInputChange}
                         />
                         <div className="d-grid gap-2">
                             <button
                                 type="submit"
                                 className="btn btn-outline-primary mt-2"
                             >Agregar</button>
+                            <ToastContainer
+                                transition={Zoom}
+                            />
                         </div>
                     </form>
                 </div>
