@@ -29,11 +29,10 @@ const TodoApp = () => {
     }
 
     const handleDelete = (todoId) => {
-        const actionDelete = {
+        dispatch({
             type: 'delete',
             payload: todoId,
-        };
-        dispatch(actionDelete);
+        });
     }
 
     const handleToggle = (todoId) => {
@@ -45,10 +44,11 @@ const TodoApp = () => {
 
     return (
         <Fragment>
-            <h1>TodoApp({todos.length})</h1>
+            <h1 className="text-center">TodoApp</h1>
             <hr />
-            <div className="row">
+            <div className="col  d-md-flex">
                 <div className="col-7">
+                    <h3>Tareas({todos.length})</h3>
                     <Todolist
                         todos={todos}
                         handleDelete={handleDelete}
@@ -56,7 +56,7 @@ const TodoApp = () => {
                     />
                 </div>
                 <div className="col-5">
-                    <h4>Agregar TODO</h4>
+                    <h4 className="text-center">Agregar tarea</h4>
                     <hr />
                     <TodoAdd
                         handleAddTodo={handleAddTodo}
