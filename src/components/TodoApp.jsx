@@ -6,7 +6,7 @@ import { ToastContainer, toast, Zoom } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const init = () => {
-    return JSON.parse(localStorage.getItem('todos')) || []
+    return JSON.parse(localStorage.getItem('todos')) || [];
     // return [{
     //     id: new Date().getTime(),
     //     desc: 'Aprender React',
@@ -24,8 +24,16 @@ const TodoApp = () => {
 
     useEffect(() => {
         localStorage.setItem('todos', JSON.stringify(todos));
-    }, [todos])
+    }, [todos]);
 
+    const handleDelete = (todoId) => {
+        console.log(todoId)
+        const actionDelete = {
+            type: 'delete',
+            payload: todoId,
+        };
+        dispatch(actionDelete);
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -72,7 +80,10 @@ const TodoApp = () => {
                                 className="list-group-item"
                             >
                                 <p className="text-center">{i + 1}. {todo.desc}</p>
-                                <button className="btn btn-danger">Borrar</button>
+                                <button
+                                    className="btn btn-danger"
+                                    onClick={(() => handleDelete(todo.id))}
+                                >Borrar</button>
                             </li>
                         ))}
                     </ul>
